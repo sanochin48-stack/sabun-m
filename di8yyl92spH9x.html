@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="ja">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="PCMアプリ">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="theme-color" content="#eef0f2">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="manifest" href="manifest.webmanifest">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}</style>
+<title>PCMアプリ</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap">
+<style>
+/* Layout: one narrow column, one sentence per screen. The sentence is the only thing set large. */
+:root{
+  --bg:#eef0f2;          /* cool paper, slight blue bias */
+  --surface:#f9fafb;
+  --ink:#1d2329;
+  --muted:#5d6670;
+  --line:#d3d8de;
+  --accent:#34506b;      /* slate ink-blue: used for selection and primary action only */
+  --accent-ink:#ffffff;
+  --accent-soft:#dfe6ee;
+  --font-sentence:"Shippori Mincho","Hiragino Mincho ProN","Yu Mincho",serif;
+  --font-body:"Zen Kaku Gothic New","Hiragino Sans","Yu Gothic",system-ui,sans-serif;
+  --step--1:.8125rem; --step-0:.9375rem; --step-1:1.0625rem; --step-2:1.375rem;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#161a1e; --surface:#1e2328; --ink:#e6e9ec; --muted:#9aa3ad; --line:#323940;
+  --accent:#9db6cf; --accent-ink:#12171c; --accent-soft:#26313c; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#161a1e; --surface:#1e2328; --ink:#e6e9ec; --muted:#9aa3ad; --line:#323940;
+  --accent:#9db6cf; --accent-ink:#12171c; --accent-soft:#26313c; color-scheme:dark}
+
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:var(--step-0);line-height:1.8;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));-webkit-text-size-adjust:100%}
+.wrap{max-width:34rem;margin:0 auto;padding-block:20px 40px;display:flex;flex-direction:column;gap:20px;min-height:100%}
+header.top{display:flex;justify-content:space-between;align-items:baseline;gap:12px;color:var(--muted);font-size:var(--step--1)}
+header.top .pos{font-variant-numeric:tabular-nums;letter-spacing:.04em}
+nav.tabs{display:flex;gap:4px}
+nav.tabs button{background:none;border:none;color:var(--muted);font:inherit;padding:4px 8px;border-radius:6px;cursor:pointer}
+nav.tabs button[aria-current="page"]{color:var(--ink);background:var(--accent-soft)}
+.who{display:flex;flex-direction:column;gap:2px}
+.who .nm{font-weight:500;font-size:var(--step-1)}
+.who .fl{font-size:var(--step--1);color:var(--accent);letter-spacing:.02em}
+.field{font:inherit;font-size:var(--step-1);padding:12px 14px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);width:100%;box-sizing:border-box}
+.field:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+main{display:flex;flex-direction:column;gap:20px;flex:1}
+.lead{color:var(--muted);font-size:var(--step-0);margin:0}
+.sentence{font-family:var(--font-sentence);font-weight:500;font-size:var(--step-2);line-height:1.75;margin:0;
+  padding:24px 22px;background:var(--surface);border:1px solid var(--line);border-radius:4px;text-wrap:pretty}
+.sentence.small{font-size:var(--step-1);padding:16px 18px}
+.q{display:flex;flex-direction:column;gap:10px;margin:0;border:none;padding:0}
+.q legend{font-weight:500;padding:0;margin-bottom:6px}
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{text-align:left;font:inherit;color:var(--ink);background:var(--surface);border:1px solid var(--line);border-radius:4px;
+  padding:12px 16px;cursor:pointer;min-height:48px}
+.opt[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.note{font-size:var(--step--1);color:var(--muted);margin:0}
+.note.next{color:var(--ink);padding:10px 14px;border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 4px 4px 0}
+.primary{font:inherit;font-weight:500;background:var(--accent);color:var(--accent-ink);border:none;border-radius:4px;padding:13px 18px;cursor:pointer;min-height:48px}
+.primary:disabled{opacity:.4;cursor:default}
+.ghost{font:inherit;background:none;border:1px solid var(--line);color:var(--ink);border-radius:4px;padding:11px 16px;cursor:pointer}
+.link{font:inherit;font-size:var(--step--1);background:none;border:none;color:var(--muted);text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:4px 0}
+button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+p{margin:0}
+.stack{display:flex;flex-direction:column;gap:12px}
+.done{display:flex;flex-direction:column;gap:6px;font-size:var(--step--1);color:var(--muted)}
+.done strong{color:var(--ink);font-weight:500}
+h1{font-family:var(--font-sentence);font-weight:600;font-size:1.6rem;line-height:1.5;margin:0;text-wrap:balance}
+h2{font-size:var(--step-1);font-weight:500;margin:0}
+.notice{border-left:3px solid var(--line);padding:4px 0 4px 14px;color:var(--ink)}
+
+/* review & history */
+.pairs{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:4px;overflow:hidden;background:var(--surface)}
+.pairs .h{font-size:var(--step--1);color:var(--muted);padding:8px 12px;border-bottom:1px solid var(--line);letter-spacing:.04em}
+.pairs .c{padding:10px 12px;border-bottom:1px solid var(--line);min-width:0;font-size:var(--step--1);line-height:1.6}
+.pairs .c:nth-last-child(-n+2){border-bottom:none}
+.pairs > :nth-child(even){border-left:1px solid var(--line)}
+.pairs .d{color:var(--muted);font-variant-numeric:tabular-nums}
+.pairs .a{color:var(--ink);font-weight:500}
+.hist{display:flex;flex-direction:column;gap:0;border-top:1px solid var(--line)}
+.hist .row{display:grid;grid-template-columns:4.2rem 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.hist .row .d{color:var(--muted);font-size:var(--step--1);font-variant-numeric:tabular-nums}
+.hist .row .s{font-family:var(--font-sentence);font-size:var(--step-0);line-height:1.7}
+.hist .row .ans{font-size:var(--step--1);color:var(--muted);margin-top:4px}
+.hist .wk{font-size:var(--step--1);color:var(--muted);padding:16px 0 4px;letter-spacing:.04em}
+
+footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line)}
+.dev{border:1px dashed var(--line);border-radius:4px;padding:12px;display:flex;flex-direction:column;gap:10px;font-size:var(--step--1)}
+.dev .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.dev input[type=number]{width:4.5rem;font:inherit;padding:6px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink)}
+.dev .ghost{padding:6px 10px}
+@media (prefers-reduced-motion:no-preference){main{animation:in .25s ease-out}@keyframes in{from{opacity:.6}to{opacity:1}}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <span class="pos" id="pos"></span>
+    <nav class="tabs" aria-label="画面">
+      <button id="tab-today" aria-current="page">きょう</button>
+      <button id="tab-history">これまで</button>
+    </nav>
+  </header>
+  <div class="who" id="who" hidden>
+    <span class="nm" id="who-name"></span>
+    <span class="fl" id="who-floor"></span>
+  </div>
+  <main id="main"></main>
+  <footer>
+    <button class="link" id="btn-stop">やめる</button>
+    
+  </footer>
+  
+</div>
+
+<script>
+/* ===== 配布時に差し替えるところ ===== */
+const CONFIG = {
+  mode: "monitor",            // "monitor"（ログ送信あり）／ "org"（送信なし）
+  trainerLabel: "さのちん",   // モニター版の告知に出す名前
+  gasUrl: "https://script.google.com/macros/s/AKfycbxz1WX9Fn9PtpFaiWcAsLauFGOLoEgQ_C4DR-OoeYeOj0qe0PDvemXRZTndvQjMQA32ow/exec",       // GASのWebアプリURL。空なら送らない
+  token: "oOGlAEEMP5DrIUex",         // GAS側の TOKEN と同じ合言葉
+  dev: false                // true のときだけ「試作用の操作」を出す
+};
+const DATA = {"id": "10", "base": "イマジナー", "phase": "パシスター", "phaseFloor": 2, "rank": {"イマジナー": 1, "パシスター": 2, "ハーモナイザー": 3, "レベル": 4, "シンカー": 5, "プロモーター": 6}, "terms": {"cognition": "内省（想像）", "baseDriver": "強くあれ", "phaseDriver": "相手に完全さ", "need": "仕事の承認（取り組む姿勢）／信念・確信", "failure": "信念を押し付ける", "strengths": [{"floor": 1, "type": "イマジナー", "label": "想像力豊か・内省的・落ち着いている"}, {"floor": 2, "type": "パシスター", "label": "献身的・観察力がある・良心的"}, {"floor": 3, "type": "ハーモナイザー", "label": "思いやりがある・感受性が豊か・あたたかい"}]}, "style": "イマジナー（通貨：内省・想像）", "sentencePattern": "〔通貨で場面を呼び出す〕のなかに、〔欲求／強み〕の感じがあった", "sameSentence": "朝と夜で同じ文を出す。夜は「あった（その場で）／あった（あとから）／思い当たらなかった」を聞き、あったときだけその週の問いに進む。", "nightly": {"first": {"q": "今日、これはありましたか。", "options": ["あった（その場で気づいた）", "あった（あとから気づいた）", "思い当たらなかった"], "note": "梯子ではありません。「あとから」が普通です。"}, "reviewFirst": {"q": "この一週間をふり返って、これはありましたか。", "options": ["あった", "思い当たらなかった"]}, "W1": {"q": "それは自分にとって、", "options": ["当たり前だった", "当たり前じゃないかも、と思った"]}, "W3": {"q": "その力の入れ方は、", "options": ["必要な分だった", "多かった"]}, "W4": {"q": "そのときは、", "options": ["自然に出た", "頑張った"]}}, "nextMorning": {"weeks": ["W2"], "q": "その感じは、まだ残っていますか。", "options": ["残っている", "残っていない"]}, "weeks": [{"id": "W1", "target": "base", "focus": "自分の普通（認知）", "days": ["人の話を聞いているなかに、頭のなかで別の場面を思い浮かべている自分がいた。", "にぎやかな場のなかに、少し離れて眺めている自分がいた。", "何かを頼まれたなかに、はっきり言ってもらえたほうが動きやすい感じがあった。", "何かを決めるなかに、すぐには答えず、一度内側で考えている自分がいた。", "静かな時間のなかに、「なぜそうなんだろう」と思いめぐらせている自分がいた。", "人の様子を見ているなかに、「どうしてみんなそんなにすぐ話せるんだろう」と思う瞬間があった。", "一週間をふり返るなかに、「誰でもそう考える」と思っていたことが一つあった。"]}, {"id": "W2", "target": "phase", "focus": "心欲", "currency": "イマジナー（内省（想像））", "need": "パシスター：仕事の承認（取り組む姿勢）／信念・確信", "days": ["ひとりで考えているなかに、自分の大事にしていることがはっきりする感じがあった。", "静かな時間のなかに、取り組む姿勢を見ていてもらえたと思える感じがあった。", "思いをめぐらせているなかに、「これでいい」と確かめられる感じがあった。", "静かに取り組んでいるなかに、そのていねいさを認めてもらえた感じがあった。", "ひとりでふり返っているなかに、自分の信じるやり方に納得できる感じがあった。", "落ち着いた時間のなかに、自分の考えを信頼してもらえた感じがあった。", "一週間をふり返るなかに、認めてもらえた感じが静かに残っていた日があった。"]}, {"id": "W3", "target": "base", "focus": "ドライバー", "days": ["困っている場面のなかに、「自分でなんとかしよう」と黙っている自分がいた。", "意見を求められたなかに、言わずに飲み込んでいる自分がいた。", "何かを始める場面のなかに、声がかかるまで待っている自分がいた。", "大変な状況のなかに、平気な顔をしている自分がいた。", "ひとりで考えているなかに、同じところを回り続けている感じがあった。", "人と一緒にいるなかに、できるだけ目立たないようにしている自分がいた。", "一週間をふり返るなかに、ひとりで抱えることに力が入っていた場面があった。"]}, {"id": "W4", "target": "phase", "focus": "強み（下三段）", "currency": "イマジナー（内省（想像））", "days": ["ひとりで考えているなかに、いろいろな場面を思い描いている自分がいた。", "静かな時間のなかに、落ち着いて自分の内側を見つめている自分がいた。", "ひとりで考えているなかに、細かいところまでよく見えている自分がいた。", "静かに取り組んでいるなかに、大切なことのために力を尽くしている自分がいた。", "思いをめぐらせているなかに、相手の気持ちを感じ取っている自分がいた。", "静かな時間のなかに、人をあたたかく思っている自分がいた。", "一か月分を並べて。W2で「思い当たらなかった」日と、この週で「頑張った」日は重なっていますか。"], "dayStrength": ["イマジナー・想像力", "イマジナー・内省的", "パシスター・観察力", "パシスター・献身的", "ハーモナイザー・思いやり", "ハーモナイザー・あたたかさ", null], "lastDay": {"mode": "review", "pair": ["W2", "W4"], "rule": "並べるだけ。診断しない。"}}]};
+/* ================================== */
+
+const KEY = "pcm-diff-" + DATA.id;
+let mem = null;
+function load(){ try{ const s = localStorage.getItem(KEY); if(s) return JSON.parse(s); }catch(e){} return mem; }
+function save(){ mem = state; try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+let state = load() || { start:null, records:{}, queue:[], stopped:null, devDay:null, mode:CONFIG.mode };
+if(!state.mode) state.mode = CONFIG.mode;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function ymd(d){ return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); }
+function daysBetween(a,b){ const pa=a.split("-").map(Number), pb=b.split("-").map(Number);
+  return Math.round((Date.UTC(pb[0],pb[1]-1,pb[2])-Date.UTC(pa[0],pa[1]-1,pa[2]))/86400000); }
+/* 一日の区切りは朝5時。0〜5時は前の日の夜として扱う */
+const MORNING_FROM = 5, NIGHT_FROM = 19;
+function logicalNow(){ return new Date(Date.now() - MORNING_FROM*3600000); }
+function tomorrowStart(){ const t = logicalNow(); t.setDate(t.getDate()+1); return ymd(t); }
+function realDay(){ return state.start ? daysBetween(state.start, ymd(logicalNow()))+1 : 1; }
+function phase(){
+  if(CONFIG.dev && state.devPhase) return state.devPhase;
+  const h = new Date().getHours();
+  return (h >= NIGHT_FROM || h < MORNING_FROM) ? "night" : "morning";
+}
+function today(){ return (CONFIG.dev && (state.devDay ?? null) !== null) ? state.devDay : realDay(); }
+
+function info(d){
+  const w = Math.min(4, Math.ceil(d/7)), idx = (d-1)%7;
+  const week = DATA.weeks[w-1];
+  return { d, w, idx, week, id:week.id, sentence:week.days[idx], review: idx===6, last: d===28 };
+}
+function rec(d){ return state.records[d] || (state.records[d] = {}); }
+
+/* ----- 送信（モニター版のみ。失敗してもローカルには残る） ----- */
+function send(kind, d, payload){
+  if(state.mode !== "monitor" || !CONFIG.gasUrl) return;
+  const i = d ? info(d) : null;
+  state.queue.push({ token:CONFIG.token, id:DATA.id, name:state.name||"", kind, day:d||null, week:i?i.id:null,
+    sentence:i?i.sentence:"", at:new Date().toISOString(), ...payload });
+  save(); flush();
+}
+function flush(){
+  if(!CONFIG.gasUrl || !state.queue.length) return;
+  const items = state.queue.slice();
+  fetch(CONFIG.gasUrl, { method:"POST", mode:"no-cors", headers:{"Content-Type":"text/plain"}, body:JSON.stringify(items) })
+    .then(()=>{ state.queue = state.queue.slice(items.length); save(); })
+    .catch(()=>{});
+}
+
+/* ----- 画面 ----- */
+let view = "today";
+let draft = {};
+
+function setPos(){
+  if(!state.start || state.stopped){ $("pos").textContent = ""; return; }
+  const d = today();
+  $("pos").textContent = d < 1 ? "明日の朝から" : d > 28 ? "一巡しました" : `${info(d).id} ・ ${d}日目`;
+}
+/* 名前の下に出す一行：W1・W3はベース、W2はフェーズ、W4はその日の強みの階 */
+function floorLabel(i){
+  if(!i || i.last) return "";
+  if(i.id==="W1" || i.id==="W3") return `あなたのベースは${DATA.base}です`;
+  if(i.id==="W2") return `あなたのフェーズは${DATA.phase}です`;
+  const ds = i.week.dayStrength && i.week.dayStrength[i.idx];
+  if(!ds) return "";
+  const type = ds.split("・")[0], fl = DATA.rank[type];
+  return fl===1 ? `あなたのベースは${type}です` : `あなたの${fl}階フロアは${type}です`;
+}
+function setWho(i){
+  const show = !!state.name;
+  $("who").hidden = !show; if(!show) return;
+  $("who-name").textContent = state.name;
+  const fl = floorLabel(i);
+  $("who-floor").textContent = fl; $("who-floor").hidden = !fl;
+}
+function render(){
+  setPos();
+  $("tab-today").setAttribute("aria-current", view==="today"?"page":"false");
+  $("tab-history").setAttribute("aria-current", view==="history"?"page":"false");
+  const m = $("main");
+  setWho(null);
+  if(!state.start && IN_APP && !allowInApp) return m.innerHTML = inAppHTML(), bindInApp();
+  if(!state.start) return view==="name" ? (m.innerHTML = nameHTML(), bindName()) : (m.innerHTML = introHTML(), bindIntro());
+  if(state.stopped && view!=="stopconfirm") return m.innerHTML = stoppedHTML(), bindStopped();
+  if(view==="history") return m.innerHTML = historyHTML(), bindHistory();
+  if(view==="stop") return m.innerHTML = stopHTML(), bindStop();
+  const d = today();
+  if(d < 1) return m.innerHTML = waitHTML();
+  if(d > 28) return m.innerHTML = roundEndHTML(), bindRoundEnd();
+  const i = info(d), r = rec(d);
+  setWho(i);
+  const ph = phase();
+  /* 翌朝：朝の時間帯、W2の2〜7日目、前日の夜に「あった」を選んでいたときだけ */
+  if(ph==="morning" && i.id==="W2" && i.idx>=1 && i.idx<=6){
+    const p = state.records[d-1];
+    if(p && p.night && p.night.present && !p.retain && !r.morning)
+      return m.innerHTML = retainHTML(d-1), bindRetain(d-1);
+  }
+  if(ph==="morning"){
+    if(!r.morning) return m.innerHTML = morningHTML(i), bindMorning(i);
+    return m.innerHTML = laterHTML(i);
+  }
+  if(i.last) return m.innerHTML = reviewHTML(i, !!r.night), bindReview(i);
+  if(!r.night || view==="edit") return m.innerHTML = nightHTML(i, r), bindNight(i);
+  m.innerHTML = doneHTML(i, r); bindDone(i);
+}
+
+/* メッセンジャーなどアプリ内のブラウザで開かれたか（そこで登録すると記録が別の場所に残る） */
+const IN_APP = /FBAN|FBAV|FB_IAB|FBIOS|Messenger|Instagram|Line\//i.test(navigator.userAgent);
+let allowInApp = false;
+function inAppHTML(){
+  return `<div class="stack"><h1>Safariで<br>開き直してください。</h1>
+    <p class="note">Androidの方はChromeで開いてください。</p>
+    <p>いまはメッセンジャーの中で開いています。ここで登録すると、記録がSafariとは別の場所に残り、消えやすくなります。</p>
+    <p>下のボタンでこのページのアドレスをコピーして、Safari（AndroidはChrome）のアドレス欄に貼り付けて開いてください。右上や右下の「…」から「ブラウザで開く」を選んでも同じです。</p></div>
+    <button class="primary" id="btn-copy">アドレスをコピーする</button>
+    <p class="note" id="copied" hidden>コピーしました。Safariを開いて、アドレス欄に貼り付けてください。</p>
+    <p class="note" style="word-break:break-all" id="url-text">${esc(location.href)}</p>
+    <button class="link" id="btn-inapp-continue">このまま使う（おすすめしません）</button>`;
+}
+function bindInApp(){
+  $("btn-copy").onclick = () => {
+    const done = () => { $("copied").hidden = false; };
+    try { navigator.clipboard.writeText(location.href).then(done, () => selectUrl()); } catch(e){ selectUrl(); }
+  };
+  $("btn-inapp-continue").onclick = () => { allowInApp = true; render(); };
+}
+function selectUrl(){ const r = document.createRange(); r.selectNodeContents($("url-text")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }
+
+function introHTML(){
+  const monitor = state.mode==="monitor";
+  return `<div class="stack">
+    <h1>これから一か月、<br>朝と夜に一文ずつ。</h1>
+    <p>朝に一つの文を読みます。夜に同じ文をもう一度見て、二つ選びます。それだけです。</p>
+    <p>正しい答えはありません。できたかどうかではなく、どこに気づいたかを残します。</p>
+    <p>夜の「その場で気づいた／あとから気づいた／思い当たらなかった」は、上下のある段階ではありません。あとから気づくのが普通です。</p>
+    ${monitor ? `<p class="notice">お名前と、いつ書いたかと、選んだ答えが、${esc(CONFIG.trainerLabel)}にだけ見えます。モニター期間だけです。</p>`
+              : `<p class="notice">記録はこの端末の中にだけ残ります。どこにも送られません。</p>`}
+  </div>
+  <button class="primary" id="btn-start">はじめる</button>`;
+}
+function bindIntro(){ $("btn-start").onclick = () => { view="name"; render(); }; }
+
+function nameHTML(){
+  return `<div class="stack"><h2>お名前を登録してください。</h2>
+    <p class="note">${state.mode==="monitor" ? `画面の上に出ます。記録と一緒に${esc(CONFIG.trainerLabel)}にも届きます。` : "画面の上に出るだけです。"}</p></div>
+    <input class="field" id="name" type="text" autocomplete="name" placeholder="お名前" value="${esc(state.name||"")}">
+    <button class="primary" id="btn-name" disabled>登録する</button>
+    <button class="link" id="btn-name-back">戻る</button>`;
+}
+function bindName(){
+  const f = $("name"), b = $("btn-name");
+  const ok = () => b.disabled = !f.value.trim();
+  f.oninput = ok; ok(); f.focus();
+  f.onkeydown = e => { if(e.key==="Enter" && !b.disabled) b.click(); };
+  b.onclick = () => {
+    state.name = f.value.trim(); state.start = tomorrowStart(); state.records = {}; state.devDay = null;
+    save(); send("register", null, {}); view="today"; render();
+  };
+  $("btn-name-back").onclick = () => { view="today"; render(); };
+}
+function waitHTML(){
+  return `<div class="stack"><h1>明日の朝から<br>はじまります。</h1>
+    <p>朝5時を過ぎてアプリを開くと、その日の一文が出ます。夜7時を過ぎてもう一度開くと、同じ文が出るので、二つ選んで記録します。</p>
+    <p class="note">いつも同じ方法で開いてください（Safariのブックマークか、ホーム画面のアイコン）。開く場所が変わると、記録が見えなくなります。</p>
+    <p class="note">今日は、ここまでで大丈夫です。</p></div>`;
+}
+
+function morningHTML(i){
+  const lead = i.last ? "今日は、一か月分を並べて見る日です。"
+             : i.review ? "今日は、この一週間をふり返る日です。"
+             : "今日、これがあるかどうか見てみましょう。";
+  return `<p class="lead">${lead}</p>
+    <p class="sentence">${esc(i.sentence)}</p>
+    <button class="primary" id="btn-ack">見ました</button>`;
+}
+function laterHTML(i){
+  return `<p class="lead">${i.last ? "夜7時になったら、一か月分を並べて見ます。" : "夜7時になったら、この文をもう一度見ます。"}</p>
+    <p class="sentence small">${esc(i.sentence)}</p>
+    <p class="note">それまでは、閉じておいて大丈夫です。</p>`;
+}
+function bindMorning(i){
+  const go = (skipped) => { const r = rec(i.d); r.morning = { at:new Date().toISOString(), skipped }; save(); send("morning", i.d, {skipped}); render(); };
+  $("btn-ack").onclick = () => go(false);
+}
+
+function optButtons(name, options, current){
+  return `<div class="opts" role="group">${options.map((o,k)=>
+    `<button class="opt" data-q="${name}" data-v="${esc(o)}" aria-pressed="${current===o}">${esc(o)}</button>`).join("")}</div>`;
+}
+/* 夜：一つ目で「あったか・いつ気づいたか」を聞き、あったときだけ二つ目（その週の問い）に進む */
+function firstQ(i){ return i.review ? DATA.nightly.reviewFirst : DATA.nightly.first; }
+function isPresent(i, v){ const o = firstQ(i).options; return !!v && v !== o[o.length-1]; }
+function secondQ(i){ return i.review ? null : (DATA.nightly[i.id] || null); }
+function nightHTML(i, r){
+  const fq = firstQ(i);
+  draft = { first: r.night ? r.night.first : null, answer: r.night ? r.night.answer : null };
+  return `<p class="sentence small">${esc(i.sentence)}</p>
+    <fieldset class="q"><legend>${esc(fq.q)}</legend>
+      ${optButtons("first", fq.options, draft.first)}
+      ${fq.note ? `<p class="note">${esc(fq.note)}</p>` : ""}</fieldset>
+    <div id="q2"></div>
+    <button class="primary" id="btn-save" disabled>記録する</button>`;
+}
+function bindNight(i){
+  const sq = secondQ(i);
+  const need2 = () => !!sq && isPresent(i, draft.first);
+  const draw2 = () => {
+    if(!need2()){
+      draft.answer = null;
+      /* W2で「あった」のときは、二つ目の代わりに翌朝の予告を出す */
+      const w2 = i.id==="W2" && !i.review && isPresent(i, draft.first) && DATA.nextMorning;
+      $("q2").innerHTML = w2 ? `<p class="note next">明日の朝、この感じがまだ残っているかを聞きます。</p>` : "";
+      return;
+    }
+    $("q2").innerHTML = `<fieldset class="q"><legend>${esc(sq.q)}</legend>${optButtons("answer", sq.options, draft.answer)}</fieldset>`;
+    bindOpts();
+  };
+  const ready = () => $("btn-save").disabled = !(draft.first && (!need2() || draft.answer));
+  const bindOpts = () => document.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    const q = b.dataset.q; draft[q] = b.dataset.v;
+    document.querySelectorAll(`.opt[data-q="${q}"]`).forEach(x => x.setAttribute("aria-pressed", x===b));
+    if(q==="first") draw2();
+    ready();
+  });
+  bindOpts(); draw2(); ready();
+  $("btn-save").onclick = () => {
+    const r = rec(i.d);
+    r.night = { first: draft.first, present: isPresent(i, draft.first), answer: need2() ? draft.answer : null, at:new Date().toISOString() };
+    save(); send("night", i.d, { timing:r.night.first, answer:r.night.answer||"" }); view="today"; render();
+  };
+}
+
+function doneHTML(i, r){
+  return `<p class="lead">記録しました。</p>
+    <p class="sentence small">${esc(i.sentence)}</p>
+    <div class="done">
+      <span><strong>${esc(r.night.first||"")}</strong></span>
+      ${r.night.answer ? `<span><strong>${esc(r.night.answer)}</strong></span>` : ""}
+    </div>
+    <p class="note">また明日の朝に。</p>
+    <button class="link" id="btn-edit">選び直す</button>`;
+}
+function bindDone(){ $("btn-edit").onclick = () => { view="edit"; render(); }; }
+
+function retainHTML(pd){
+  const p = info(pd), nm = DATA.nextMorning;
+  return `<p class="lead">昨日の文です。</p>
+    <p class="sentence small">${esc(p.sentence)}</p>
+    <fieldset class="q"><legend>${esc(nm.q)}</legend>${optButtons("retain", nm.options, null)}</fieldset>`;
+}
+function bindRetain(pd){
+  document.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    rec(pd).retain = { answer:b.dataset.v, at:new Date().toISOString() }; save();
+    send("retain", pd, { answer:b.dataset.v }); render();
+  });
+}
+
+function ans(d, key){ const r = state.records[d]; if(!r) return key==="retain" ? "" : "—";
+  if(key==="retain") return r.retain ? r.retain.answer : "";
+  return r.night ? (r.night.answer || r.night.first || "—") : "—"; }
+function reviewHTML(i, seen){
+  const w2 = DATA.weeks[1], w4 = DATA.weeks[3];
+  let cells = `<div class="h">W2 心理的欲求</div><div class="h">W4 強み</div>`;
+  for(let k=0;k<6;k++){
+    const a = 8+k, b = 22+k, rt = ans(a,"retain");
+    cells += `<div class="c"><div class="d">${a}日目</div><div class="a">${esc(ans(a))}</div>${rt?`<div class="d">翌朝：${esc(rt)}</div>`:""}</div>
+              <div class="c"><div class="d">${b}日目</div><div class="a">${esc(ans(b))}</div></div>`;
+  }
+  return `<p class="sentence small">${esc(i.sentence)}</p>
+    <div class="pairs">${cells}</div>
+    <p class="note">${esc(w4.lastDay.rule.replace("診断しない。",""))}読むのは自分です。</p>
+    ${seen ? `<p class="note">見ました。</p>` : `<button class="primary" id="btn-seen">見ました</button>`}`;
+}
+function bindReview(i){ const b=$("btn-seen"); if(b) b.onclick = () => { rec(i.d).night = { seen:true, at:new Date().toISOString() }; save(); send("review", i.d, {}); render(); }; }
+
+function roundEndHTML(){
+  return `<div class="stack"><h1>一巡しました。</h1>
+    <p>続けたいときは、同じ四週をもう一度たどります。新しいものは足しません。同じところを、もう一度見ます。</p></div>
+    <button class="primary" id="btn-again">もう一巡する</button>`;
+}
+function bindRoundEnd(){ $("btn-again").onclick = () => {
+  state.history = (state.history||[]).concat([{ start:state.start, records:state.records }]);
+  state.start = tomorrowStart(); state.records = {}; state.devDay = null; save(); send("round", null, {}); render(); }; }
+
+function historyHTML(){
+  const last = Math.min(today(), 28);
+  if(last < 1) return `<h2>これまで</h2><p class="note">明日の朝から記録がはじまります。</p>`;
+  let out = "", wk = "";
+  for(let d=1; d<=last; d++){
+    const i = info(d), r = state.records[d] || {};
+    if(i.id!==wk){ wk=i.id; out += `<div class="wk">${i.id}　${esc(i.week.focus)}</div>`; }
+    let a = "";
+    if(i.last) a = r.night ? "並べて見た" : "";
+    else if(r.night) a = [r.night.first, r.night.answer].filter(Boolean).join("　／　");
+    if(r.retain) a += `　／　翌朝：${r.retain.answer}`;
+    out += `<div class="row"><div class="d">${d}日目</div><div><div class="s">${esc(i.sentence)}</div>
+      <div class="ans">${a ? esc(a) : "記録なし"}</div></div></div>`;
+  }
+  return `<h2>これまで</h2><p class="note">自分だけが見られます。</p><div class="hist">${out}</div>`;
+}
+function bindHistory(){}
+
+const STOP_REASONS = ["時間がとれなかった","文がピンとこなかった","続けることが負担になった","ほかの理由"];
+function stopHTML(){
+  return `<div class="stack"><h2>やめる前に、ひとつだけ。</h2>
+    <p class="note">続かなくなるのも、大事な手がかりです。近いものを選んでください。</p></div>
+    <fieldset class="q"><legend>いちばん近いのは</legend>${optButtons("stop", STOP_REASONS, null)}</fieldset>
+    <button class="link" id="btn-back">やめずに戻る</button>`;
+}
+function bindStop(){
+  document.querySelectorAll(".opt").forEach(b => b.onclick = () => {
+    state.stopped = { reason:b.dataset.v, day:today(), at:new Date().toISOString() }; save();
+    send("stop", today(), { reason:b.dataset.v }); view="today"; render();
+  });
+  $("btn-back").onclick = () => { view="today"; render(); };
+}
+function stoppedHTML(){
+  return `<div class="stack"><h1>ここで終わります。</h1><p>ありがとうございました。これまでの記録は「これまで」から見られます。</p></div>
+    <button class="link" id="btn-resume">やめるのを取り消す</button>`;
+}
+function bindStopped(){ $("btn-resume").onclick = () => { state.stopped=null; save(); send("resume", today(), {}); render(); }; }
+
+/* ----- 共通の操作 ----- */
+$("tab-today").onclick = () => { view="today"; render(); };
+$("tab-history").onclick = () => { view = state.start ? "history" : "today"; render(); };
+$("btn-stop").onclick = () => { if(!state.start || state.stopped) return; view="stop"; render(); };
+
+/* 試作用（配布版では動かさない） */
+if(CONFIG.dev){
+function devSync(){ $("dev-day").value = today(); $("dev-mode").textContent = state.mode==="monitor" ? "モニター版（切り替える）" : "組織導入版（切り替える）"; }
+$("btn-dev").onclick = () => { $("dev").hidden = !$("dev").hidden; devSync(); };
+$("dev-apply").onclick = () => { if(!state.start){ state.start = ymd(new Date()); state.name = state.name || "（試作）"; }
+  const n = parseInt($("dev-day").value,10); const v = Math.max(0, Math.min(29, isNaN(n)?1:n)); state.devDay = v; view="today"; save(); render(); devSync(); };
+$("dev-real").onclick = () => { state.devDay = null; save(); render(); devSync(); };
+$("dev-ph-auto").onclick = () => { state.devPhase = null; save(); view="today"; render(); };
+$("dev-ph-m").onclick = () => { state.devPhase = "morning"; save(); view="today"; render(); };
+$("dev-ph-n").onclick = () => { state.devPhase = "night"; save(); view="today"; render(); };
+$("dev-mode").onclick = () => { state.mode = state.mode==="monitor" ? "org" : "monitor"; save(); render(); devSync(); };
+$("dev-clear-day").onclick = () => { delete state.records[today()]; if(today()>1 && state.records[today()-1]) delete state.records[today()-1].retain; save(); view="today"; render(); };
+$("dev-reset").onclick = () => { state = { start:null, name:null, records:{}, queue:[], stopped:null, devDay:null, mode:state.mode }; save(); view="today"; render(); devSync(); };
+
+}
+
+/* 開きっぱなしでも、5時・19時をまたいだら画面を切り替える（選びかけの答えは消さない） */
+let shown = "";
+function key(){ return today() + "-" + phase(); }
+function tick(){ if(key()!==shown && view!=="edit"){ shown = key(); render(); } }
+setInterval(tick, 60000);
+document.addEventListener("visibilitychange", () => { if(!document.hidden) tick(); });
+
+flush();
+shown = key();
+render();
+</script>
