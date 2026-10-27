@@ -94,6 +94,7 @@ h2{font-size:var(--step-1);font-weight:500;margin:0}
 .hist .row .ans{font-size:var(--step--1);color:var(--muted);margin-top:4px}
 .hist .wk{font-size:var(--step--1);color:var(--muted);padding:16px 0 4px;letter-spacing:.04em}
 
+.app-id{font-size:var(--step--1);color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em;align-self:center}
 footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line)}
 .dev{border:1px dashed var(--line);border-radius:4px;padding:12px;display:flex;flex-direction:column;gap:10px;font-size:var(--step--1)}
 .dev .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -117,6 +118,7 @@ footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;paddin
   <main id="main"></main>
   <footer>
     <button class="link" id="btn-stop">やめる</button>
+    <span class="app-id" id="app-id"></span>
     
   </footer>
   
@@ -483,6 +485,7 @@ function tick(){ if(key()!==shown && view!=="edit"){ shown = key(); render(); } 
 setInterval(tick, 60000);
 document.addEventListener("visibilitychange", () => { if(!document.hidden) tick(); });
 
+$("app-id").textContent = "ID " + DATA.id;
 flush();
 shown = key();
 render();

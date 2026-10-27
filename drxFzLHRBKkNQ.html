@@ -94,6 +94,7 @@ h2{font-size:var(--step-1);font-weight:500;margin:0}
 .hist .row .ans{font-size:var(--step--1);color:var(--muted);margin-top:4px}
 .hist .wk{font-size:var(--step--1);color:var(--muted);padding:16px 0 4px;letter-spacing:.04em}
 
+.app-id{font-size:var(--step--1);color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em;align-self:center}
 footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line)}
 .dev{border:1px dashed var(--line);border-radius:4px;padding:12px;display:flex;flex-direction:column;gap:10px;font-size:var(--step--1)}
 .dev .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -117,31 +118,10 @@ footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;paddin
   <main id="main"></main>
   <footer>
     <button class="link" id="btn-stop">やめる</button>
-    <button class="link" id="btn-dev">試作用の操作</button>
+    <span class="app-id" id="app-id"></span>
+    
   </footer>
-  <div class="dev" id="dev" hidden>
-    <strong>試作用（配布版には入れない）</strong>
-    <div class="row">
-      <label for="dev-day">何日目として見る（0＝開始前）</label>
-      <input type="number" id="dev-day" min="0" max="29">
-      <button class="ghost" id="dev-apply">移る</button>
-      <button class="ghost" id="dev-real">実際の日付に戻す</button>
-    </div>
-    <div class="row">
-      <span>時間帯：</span>
-      <button class="ghost" id="dev-ph-auto">時刻どおり</button>
-      <button class="ghost" id="dev-ph-m">朝にする</button>
-      <button class="ghost" id="dev-ph-n">夜にする</button>
-    </div>
-    <div class="row">
-      <span>モード：</span>
-      <button class="ghost" id="dev-mode"></button>
-    </div>
-    <div class="row">
-      <button class="ghost" id="dev-clear-day">この日の記録を消す</button>
-      <button class="ghost" id="dev-reset">全部消して最初から</button>
-    </div>
-  </div>
+  
 </div>
 
 <script>
@@ -153,7 +133,7 @@ const CONFIG = {
   token: "oOGlAEEMP5DrIUex",         // GAS側の TOKEN と同じ合言葉
   dev: false                // true のときだけ「試作用の操作」を出す
 };
-const DATA = {"id": "00", "base": "シンカー", "phase": "シンカー", "phaseFloor": 1, "rank": {"シンカー": 1, "パシスター": 2, "プロモーター": 3, "レベル": 4, "ハーモナイザー": 5, "イマジナー": 6}, "terms": {"cognition": "思考（論理）", "baseDriver": "自分に完全さ", "phaseDriver": "自分に完全さ", "need": "仕事の承認（能力・手法・成果）／時間の枠組み", "failure": "自分で仕切り過ぎる", "strengths": [{"floor": 1, "type": "シンカー", "label": "論理的・責任感がある・組織立てる"}, {"floor": 2, "type": "パシスター", "label": "献身的・観察力がある・良心的"}, {"floor": 3, "type": "プロモーター", "label": "適応力がある・魅力的・行動力がある"}]}, "style": "シンカー（通貨：思考・論理）", "sentencePattern": "〔通貨で場面を呼び出す〕のなかに、〔欲求／強み〕の感じがあった", "sameSentence": "朝と夜で同じ文を出す。夜は「あった（その場で）／あった（あとから）／思い当たらなかった」を聞き、あったときだけその週の問いに進む。", "nightly": {"first": {"q": "今日、これはありましたか。", "options": ["あった（その場で気づいた）", "あった（あとから気づいた）", "思い当たらなかった"], "note": "梯子ではありません。「あとから」が普通です。"}, "reviewFirst": {"q": "この一週間をふり返って、これはありましたか。", "options": ["あった", "思い当たらなかった"]}, "W1": {"q": "それは自分にとって、", "options": ["当たり前だった", "当たり前じゃないかも、と思った"]}, "W3": {"q": "その力の入れ方は、", "options": ["必要な分だった", "多かった"]}, "W4": {"q": "そのときは、", "options": ["自然に出た", "頑張った"]}}, "nextMorning": {"weeks": ["W2"], "q": "その感じは、まだ残っていますか。", "options": ["残っている", "残っていない"]}, "weeks": [{"id": "W1", "target": "base", "focus": "自分の普通（認知）", "days": ["話を聞いているなかに、「根拠は何だろう」と確かめている自分がいた。", "人と話しているなかに、気持ちより先に、筋道が通っているかを見ている自分がいた。", "予定を組んでいるなかに、順番と所要時間を自然に並べている自分がいた。", "会議のなかに、話の筋が見えないことに落ち着かない感じがあった。", "何かを決めるなかに、まず事実と情報をそろえようとしている自分がいた。", "人のやり方を見ているなかに、「もっと効率的にできるのに」と思う瞬間があった。", "一週間をふり返るなかに、「誰でもそう考える」と思っていたことが一つあった。"]}, {"id": "W2", "target": "phase", "focus": "心欲", "currency": "シンカー（思考・論理）", "need": "シンカー：仕事の承認（能力・手法・成果）／時間の枠組み", "days": ["段取りを組んだなかに、そのやり方がうまく働いていると認めてもらえた感じがあった。", "考えを説明しているなかに、筋道をそのまま受け取ってもらえた感じがあった。", "一日の流れを見通しているなかに、時間が組んだとおりに進んでいる感じがあった。", "成果を確かめているなかに、自分の力が役に立ったと伝わった感じがあった。", "整理した資料を渡したなかに、「よく考えてある」と受け取ってもらえた感じがあった。", "予定どおりに進めているなかに、終わりの時刻が見えている落ち着いた感じがあった。", "一週間をふり返るなかに、認めてもらえた感じが静かに残っていた日があった。"]}, {"id": "W3", "target": "base", "focus": "ドライバー", "days": ["説明しているなかに、もう一つ付け足そうとしている自分がいた。", "メールを書いているなかに、念のための但し書きを重ねている自分がいた。", "頼めば済む仕事のなかに、「自分でやったほうが確実だ」と感じている自分がいた。", "人の進め方を見ているなかに、組み直したくなる感じがあった。", "仕上げているなかに、まだ足りないところを探している自分がいた。", "話を聞いているなかに、より正確な言い方に直したくなる感じがあった。", "一週間をふり返るなかに、丁寧さに力が入っていた場面があった。"]}, {"id": "W4", "target": "phase", "focus": "強み（下三段）", "currency": "シンカー（思考・論理）", "days": ["整理しているなかに、物事を論理的に組み立てている自分がいた。", "段取りを考えているなかに、最後まで責任を持とうとしている自分がいた。", "筋道を追っているなかに、相手の言葉の細かいところまで見えている自分がいた。", "計画を考えているなかに、大事だと思えることに力を注いでいる自分がいた。", "状況を整理しているなかに、次の一手をすぐに決めて動いている自分がいた。", "段取りが崩れたなかに、その場に合わせてやり方を変えている自分がいた。", "一か月分を並べて。W2で「思い当たらなかった」日と、この週で「頑張った」日は重なっていますか。"], "dayStrength": ["シンカー・論理的", "シンカー・責任感", "パシスター・観察力", "パシスター・献身的", "プロモーター・行動力", "プロモーター・適応力", null], "lastDay": {"mode": "review", "pair": ["W2", "W4"], "rule": "並べるだけ。診断しない。"}}]};
+const DATA = {"id": "00", "base": "シンカー", "phase": "シンカー", "phaseFloor": 1, "rank": {"シンカー": 1, "パシスター": 2, "プロモーター": 3, "レベル": 4, "ハーモナイザー": 5, "イマジナー": 6}, "terms": {"cognition": "思考（論理）", "baseDriver": "自分に完全さ", "phaseDriver": "自分に完全さ", "need": "仕事の承認（能力・手法・成果）／時間の枠組み", "failure": "自分で仕切り過ぎる", "strengths": [{"floor": 1, "type": "シンカー", "label": "論理的・責任感がある・組織立てる"}, {"floor": 2, "type": "パシスター", "label": "献身的・観察力がある・良心的"}, {"floor": 3, "type": "プロモーター", "label": "適応力がある・魅力的・行動力がある"}]}, "style": "シンカー（通貨：思考・論理）", "sentencePattern": "〔通貨で場面を呼び出す〕のなかに、〔欲求／強み〕の感じがあった", "sameSentence": "朝と夜で同じ文を出す。夜は「あった（その場で）／あった（あとから）／思い当たらなかった」を聞き、あったときだけその週の問いに進む。", "nightly": {"first": {"q": "今日、これはありましたか。", "options": ["あった（その場で気づいた）", "あった（あとから気づいた）", "思い当たらなかった"], "note": "梯子ではありません。「あとから」が普通です。"}, "reviewFirst": {"q": "この一週間をふり返って、これはありましたか。", "options": ["あった", "思い当たらなかった"]}, "W1": {"q": "それは自分にとって、", "options": ["当たり前だった", "当たり前じゃないかも、と思った"]}, "W3": {"q": "その力の入れ方は、", "options": ["必要な分だった", "多かった"]}, "W4": {"q": "そのときは、", "options": ["自然に出た", "頑張った"]}}, "nextMorning": {"weeks": ["W2"], "q": "その感じは、まだ残っていますか。", "options": ["残っている", "残っていない"]}, "weeks": [{"id": "W1", "target": "base", "focus": "自分の普通（認知）", "days": ["話を聞いているなかに、「根拠は何だろう」と確かめている自分がいた。", "人と話しているなかに、気持ちより先に、筋道が通っているかを見ている自分がいた。", "予定を組んでいるなかに、順番と所要時間を自然に並べている自分がいた。", "会議のなかに、話の筋が見えないことに落ち着かない感じがあった。", "何かを決めるなかに、まず事実と情報をそろえようとしている自分がいた。", "人のやり方を見ているなかに、「もっと効率的にできるのに」と思う瞬間があった。", "一週間をふり返るなかに、「誰でもそう考える」と思っていたことが一つあった。"]}, {"id": "W2", "target": "phase", "focus": "心欲", "currency": "シンカー（思考（論理））", "need": "シンカー：仕事の承認（能力・手法・成果）／時間の枠組み", "days": ["段取りを組んだなかに、そのやり方がうまく働いていると認めてもらえた感じがあった。", "考えを説明しているなかに、筋道をそのまま受け取ってもらえた感じがあった。", "一日の流れを見通しているなかに、時間が組んだとおりに進んでいる感じがあった。", "成果を確かめているなかに、自分の力が役に立ったと伝わった感じがあった。", "整理した資料を渡したなかに、「よく考えてある」と受け取ってもらえた感じがあった。", "予定どおりに進めているなかに、終わりの時刻が見えている落ち着いた感じがあった。", "一週間をふり返るなかに、認めてもらえた感じが静かに残っていた日があった。"]}, {"id": "W3", "target": "base", "focus": "ドライバー", "days": ["説明しているなかに、もう一つ付け足そうとしている自分がいた。", "メールを書いているなかに、念のための但し書きを重ねている自分がいた。", "頼めば済む仕事のなかに、「自分でやったほうが確実だ」と感じている自分がいた。", "人の進め方を見ているなかに、組み直したくなる感じがあった。", "仕上げているなかに、まだ足りないところを探している自分がいた。", "話を聞いているなかに、より正確な言い方に直したくなる感じがあった。", "一週間をふり返るなかに、丁寧さに力が入っていた場面があった。"]}, {"id": "W4", "target": "phase", "focus": "強み（下三段）", "currency": "シンカー（思考（論理））", "days": ["整理しているなかに、物事を論理的に組み立てている自分がいた。", "段取りを考えているなかに、最後まで責任を持とうとしている自分がいた。", "筋道を追っているなかに、相手の言葉の細かいところまで見えている自分がいた。", "計画を考えているなかに、大事だと思えることに力を注いでいる自分がいた。", "状況を整理しているなかに、次の一手をすぐに決めて動いている自分がいた。", "段取りが崩れたなかに、その場に合わせてやり方を変えている自分がいた。", "一か月分を並べて。W2で「思い当たらなかった」日と、この週で「頑張った」日は重なっていますか。"], "dayStrength": ["シンカー・論理的", "シンカー・責任感", "パシスター・観察力", "パシスター・献身的", "プロモーター・行動力", "プロモーター・適応力", null], "lastDay": {"mode": "review", "pair": ["W2", "W4"], "rule": "並べるだけ。診断しない。"}}]};
 /* ================================== */
 
 const KEY = "pcm-diff-" + DATA.id;
@@ -174,11 +154,11 @@ function logicalNow(){ return new Date(Date.now() - MORNING_FROM*3600000); }
 function tomorrowStart(){ const t = logicalNow(); t.setDate(t.getDate()+1); return ymd(t); }
 function realDay(){ return state.start ? daysBetween(state.start, ymd(logicalNow()))+1 : 1; }
 function phase(){
-  if(state.devPhase) return state.devPhase;
+  if(CONFIG.dev && state.devPhase) return state.devPhase;
   const h = new Date().getHours();
   return (h >= NIGHT_FROM || h < MORNING_FROM) ? "night" : "morning";
 }
-function today(){ return (state.devDay ?? null) !== null ? state.devDay : realDay(); }
+function today(){ return (CONFIG.dev && (state.devDay ?? null) !== null) ? state.devDay : realDay(); }
 
 function info(d){
   const w = Math.min(4, Math.ceil(d/7)), idx = (d-1)%7;
@@ -482,7 +462,8 @@ $("tab-today").onclick = () => { view="today"; render(); };
 $("tab-history").onclick = () => { view = state.start ? "history" : "today"; render(); };
 $("btn-stop").onclick = () => { if(!state.start || state.stopped) return; view="stop"; render(); };
 
-/* 試作用 */
+/* 試作用（配布版では動かさない） */
+if(CONFIG.dev){
 function devSync(){ $("dev-day").value = today(); $("dev-mode").textContent = state.mode==="monitor" ? "モニター版（切り替える）" : "組織導入版（切り替える）"; }
 $("btn-dev").onclick = () => { $("dev").hidden = !$("dev").hidden; devSync(); };
 $("dev-apply").onclick = () => { if(!state.start){ state.start = ymd(new Date()); state.name = state.name || "（試作）"; }
@@ -495,6 +476,8 @@ $("dev-mode").onclick = () => { state.mode = state.mode==="monitor" ? "org" : "m
 $("dev-clear-day").onclick = () => { delete state.records[today()]; if(today()>1 && state.records[today()-1]) delete state.records[today()-1].retain; save(); view="today"; render(); };
 $("dev-reset").onclick = () => { state = { start:null, name:null, records:{}, queue:[], stopped:null, devDay:null, mode:state.mode }; save(); view="today"; render(); devSync(); };
 
+}
+
 /* 開きっぱなしでも、5時・19時をまたいだら画面を切り替える（選びかけの答えは消さない） */
 let shown = "";
 function key(){ return today() + "-" + phase(); }
@@ -502,7 +485,7 @@ function tick(){ if(key()!==shown && view!=="edit"){ shown = key(); render(); } 
 setInterval(tick, 60000);
 document.addEventListener("visibilitychange", () => { if(!document.hidden) tick(); });
 
-if(!CONFIG.dev){ $("btn-dev").hidden = true; $("dev").hidden = true; }
+$("app-id").textContent = "ID " + DATA.id;
 flush();
 shown = key();
 render();
