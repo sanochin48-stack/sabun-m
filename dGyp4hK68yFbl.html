@@ -52,6 +52,11 @@ nav.tabs button[aria-current="page"]{color:var(--ink);background:var(--accent-so
 .who .nm{font-weight:500;font-size:var(--step-1)}
 .who .fl{font-size:var(--step--1);color:var(--accent);letter-spacing:.02em}
 .field{font:inherit;font-size:var(--step-1);padding:12px 14px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);width:100%;box-sizing:border-box}
+.memo{display:flex;flex-direction:column;gap:6px}
+.memo label{font-size:var(--step--1);color:var(--muted)}
+.memo textarea{font:inherit;font-size:var(--step-0);line-height:1.7;min-height:5.5em;padding:10px 12px;border:1px solid var(--line);border-radius:4px;background:var(--surface);color:var(--ink);resize:vertical;width:100%;box-sizing:border-box}
+.memo textarea:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.hist .memo-h{font-size:var(--step--1);color:var(--ink);margin-top:4px;white-space:pre-wrap}
 .field:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
 main{display:flex;flex-direction:column;gap:20px;flex:1}
 .lead{color:var(--muted);font-size:var(--step-0);margin:0}
@@ -133,7 +138,7 @@ const CONFIG = {
   token: "oOGlAEEMP5DrIUex",         // GAS側の TOKEN と同じ合言葉
   dev: false                // true のときだけ「試作用の操作」を出す
 };
-const DATA = {"id": "07", "base": "ハーモナイザー", "phase": "レベル", "phaseFloor": 2, "rank": {"ハーモナイザー": 1, "レベル": 2, "シンカー": 3, "プロモーター": 4, "パシスター": 5, "イマジナー": 6}, "terms": {"cognition": "心情（思いやり）", "baseDriver": "人を喜ばせよ", "phaseDriver": "頑張れ", "need": "楽しい接触", "failure": "非難する", "strengths": [{"floor": 1, "type": "ハーモナイザー", "label": "思いやりがある・感受性が豊か・あたたかい"}, {"floor": 2, "type": "レベル", "label": "自発的・創造的・遊び心がある"}, {"floor": 3, "type": "シンカー", "label": "論理的・責任感がある・組織立てる"}]}, "style": "ハーモナイザー（通貨：心情・思いやり）", "sentencePattern": "〔通貨で場面を呼び出す〕のなかに、〔欲求／強み〕の感じがあった", "sameSentence": "朝と夜で同じ文を出す。夜は「あった（その場で）／あった（あとから）／思い当たらなかった」を聞き、あったときだけその週の問いに進む。", "nightly": {"first": {"q": "今日、これはありましたか。", "options": ["あった（その場で気づいた）", "あった（あとから気づいた）", "思い当たらなかった"], "note": "梯子ではありません。「あとから」が普通です。"}, "reviewFirst": {"q": "この一週間をふり返って、これはありましたか。", "options": ["あった", "思い当たらなかった"]}, "W1": {"q": "それは自分にとって、", "options": ["当たり前だった", "当たり前じゃないかも、と思った"]}, "W3": {"q": "その力の入れ方は、", "options": ["必要な分だった", "多かった"]}, "W4": {"q": "そのときは、", "options": ["自然に出た", "頑張った"]}}, "nextMorning": {"weeks": ["W2"], "q": "その感じは、まだ残っていますか。", "options": ["残っている", "残っていない"]}, "weeks": [{"id": "W1", "target": "base", "focus": "自分の普通（認知）", "days": ["人と話しているなかに、相手の気持ちを先に感じ取っている自分がいた。", "何気ないやりとりのなかに、場の空気が気になる感じがあった。", "誰かが困っているなかに、自然と気にかけている自分がいた。", "話し合いのなかに、理屈より「どう感じるか」で受け取っている自分がいた。", "ほっとした時間のなかに、居心地のよさを大事にしている自分がいた。", "人の言い方を聞いているなかに、「もう少しやわらかく言えばいいのに」と思う瞬間があった。", "一週間をふり返るなかに、「誰でもそう考える」と思っていたことが一つあった。"]}, {"id": "W2", "target": "phase", "focus": "心欲", "currency": "ハーモナイザー（心情（思いやり））", "need": "レベル：楽しい接触", "days": ["何気ないやりとりのなかに、思わず笑ってしまう感じがあった。", "ほっとした時間のなかに、ふざけ合える軽さがあった。", "誰かと話しているなかに、楽しくて時間を忘れる感じがあった。", "一緒に過ごしているなかに、面白がり合える感じがあった。", "気心の知れた人とのやりとりのなかに、遊び心が弾む感じがあった。", "にぎやかな場のなかに、心がふっと軽くなる感じがあった。", "一週間をふり返るなかに、楽しい感じが静かに残っていた日があった。"]}, {"id": "W3", "target": "base", "focus": "ドライバー", "days": ["頼まれごとのなかに、すぐに「いいですよ」と言っている自分がいた。", "話しているなかに、相手に合わせて自分の考えを引っ込めている自分がいた。", "何かを決めるなかに、みんなの気持ちを考えて決めきれない感じがあった。", "誰かが不機嫌そうな場面のなかに、自分のせいかもと気をもんでいる自分がいた。", "言いにくいことを伝えるなかに、前置きや「すみません」を重ねている自分がいた。", "何気ないやりとりのなかに、相手を喜ばせようと力が入っている感じがあった。", "一週間をふり返るなかに、気づかいに力が入っていた場面があった。"]}, {"id": "W4", "target": "phase", "focus": "強み（下三段）", "currency": "ハーモナイザー（心情（思いやり））", "days": ["何気ないやりとりのなかに、相手の気持ちに寄りそっている自分がいた。", "ほっとした時間のなかに、人をあたたかく迎えている自分がいた。", "何気ないやりとりのなかに、自分から楽しいことを始めている自分がいた。", "ほっとした時間のなかに、ふざけて場をなごませている自分がいた。", "誰かと話しているなかに、筋道を立てて整理している自分がいた。", "誰かを気にかけているなかに、最後まで責任を持とうとしている自分がいた。", "一か月分を並べて。W2で「思い当たらなかった」日と、この週で「頑張った」日は重なっていますか。"], "dayStrength": ["ハーモナイザー・思いやり", "ハーモナイザー・あたたかさ", "レベル・自発的", "レベル・遊び心", "シンカー・論理的", "シンカー・責任感", null], "lastDay": {"mode": "review", "pair": ["W2", "W4"], "rule": "並べるだけ。診断しない。"}}]};
+const DATA = {"id": "07", "base": "ハーモナイザー", "phase": "レベル", "phaseFloor": 2, "rank": {"ハーモナイザー": 1, "レベル": 2, "シンカー": 3, "プロモーター": 4, "パシスター": 5, "イマジナー": 6}, "terms": {"cognition": "心情（思いやり）", "baseDriver": "人を喜ばせよ", "phaseDriver": "頑張れ", "need": "楽しい接触", "failure": "非難する", "strengths": [{"floor": 1, "type": "ハーモナイザー", "label": "思いやりがある・感受性が豊か・あたたかい"}, {"floor": 2, "type": "レベル", "label": "自発的・創造的・遊び心がある"}, {"floor": 3, "type": "シンカー", "label": "論理的・責任感がある・組織立てる"}]}, "style": "ハーモナイザー（通貨：心情・思いやり）", "sentencePattern": "〔通貨で場面を呼び出す〕のなかに、〔欲求／強み〕の感じがあった", "sameSentence": "朝と夜で同じ文を出す。夜は「あった（その場で）／あった（あとから）／思い当たらなかった」を聞き、あったときだけその週の問いに進む。", "nightly": {"first": {"q": "今日、これはありましたか。", "options": ["あった（その場で気づいた）", "あった（あとから気づいた）", "思い当たらなかった"], "note": "どれを選んでも、良い悪いはありません。あとから気づくのが、ふつうです。"}, "reviewFirst": {"q": "この一週間をふり返って、これはありましたか。", "options": ["あった", "思い当たらなかった"]}, "W1": {"q": "それは自分にとって、", "options": ["当たり前だった", "当たり前じゃないかも、と思った"]}, "W3": {"q": "その力の入れ方は、", "options": ["必要な分だった", "多かった"]}, "W4": {"q": "そのときは、", "options": ["自然に出た", "頑張った"]}}, "nextMorning": {"weeks": ["W2"], "q": "その感じは、まだ残っていますか。", "options": ["残っている", "残っていない"]}, "weeks": [{"id": "W1", "target": "base", "focus": "自分の普通（認知）", "days": ["人と話しているなかに、相手の気持ちを先に感じ取っている自分がいた。", "何気ないやりとりのなかに、場の空気が気になる感じがあった。", "誰かが困っているなかに、自然と気にかけている自分がいた。", "話し合いのなかに、理屈より「どう感じるか」で受け取っている自分がいた。", "ほっとした時間のなかに、居心地のよさを大事にしている自分がいた。", "人の言い方を聞いているなかに、「もう少しやわらかく言えばいいのに」と思う瞬間があった。", "一週間をふり返るなかに、「誰でもそう考える」と思っていたことが一つあった。"]}, {"id": "W2", "target": "phase", "focus": "心欲", "currency": "ハーモナイザー（心情（思いやり））", "need": "レベル：楽しい接触", "days": ["何気ないやりとりのなかに、思わず笑ってしまう感じがあった。", "ほっとした時間のなかに、ふざけ合える軽さがあった。", "誰かと話しているなかに、楽しくて時間を忘れる感じがあった。", "一緒に過ごしているなかに、面白がり合える感じがあった。", "気心の知れた人とのやりとりのなかに、遊び心が弾む感じがあった。", "にぎやかな場のなかに、心がふっと軽くなる感じがあった。", "一週間をふり返るなかに、楽しい感じが静かに残っていた日があった。"]}, {"id": "W3", "target": "base", "focus": "ドライバー", "days": ["頼まれごとのなかに、すぐに「いいですよ」と言っている自分がいた。", "話しているなかに、相手に合わせて自分の考えを引っ込めている自分がいた。", "何かを決めるなかに、みんなの気持ちを考えて決めきれない感じがあった。", "誰かが不機嫌そうな場面のなかに、自分のせいかもと気をもんでいる自分がいた。", "言いにくいことを伝えるなかに、前置きや「すみません」を重ねている自分がいた。", "何気ないやりとりのなかに、相手を喜ばせようと力が入っている感じがあった。", "一週間をふり返るなかに、気づかいに力が入っていた場面があった。"]}, {"id": "W4", "target": "phase", "focus": "強み（下三段）", "currency": "ハーモナイザー（心情（思いやり））", "days": ["何気ないやりとりのなかに、相手の気持ちに寄りそっている自分がいた。", "ほっとした時間のなかに、人をあたたかく迎えている自分がいた。", "何気ないやりとりのなかに、自分から楽しいことを始めている自分がいた。", "ほっとした時間のなかに、ふざけて場をなごませている自分がいた。", "誰かと話しているなかに、筋道を立てて整理している自分がいた。", "誰かを気にかけているなかに、最後まで責任を持とうとしている自分がいた。", "一か月分を並べて。W2で「思い当たらなかった」日と、この週で「頑張った」日は重なっていますか。"], "dayStrength": ["ハーモナイザー・思いやり", "ハーモナイザー・あたたかさ", "レベル・自発的", "レベル・遊び心", "シンカー・論理的", "シンカー・責任感", null], "lastDay": {"mode": "review", "pair": ["W2", "W4"], "rule": "並べるだけ。診断しない。"}}]};
 /* ================================== */
 
 const KEY = "pcm-diff-" + DATA.id;
@@ -269,7 +274,7 @@ function introHTML(){
     <h1>これから一か月、<br>朝と夜に一文ずつ。</h1>
     <p>朝に一つの文を読みます。夜に同じ文をもう一度見て、二つ選びます。それだけです。</p>
     <p>正しい答えはありません。できたかどうかではなく、どこに気づいたかを残します。</p>
-    <p>夜の「その場で気づいた／あとから気づいた／思い当たらなかった」は、上下のある段階ではありません。あとから気づくのが普通です。</p>
+    <p>夜の三つの選択肢は、どれを選んでも良い悪いはありません。あとから気づくのが、ふつうです。</p>
     ${monitor ? `<p class="notice">お名前と、いつ書いたかと、選んだ答えが、${esc(CONFIG.trainerLabel)}にだけ見えます。モニター期間だけです。</p>`
               : `<p class="notice">記録はこの端末の中にだけ残ります。どこにも送られません。</p>`}
   </div>
@@ -302,12 +307,21 @@ function waitHTML(){
     <p class="note">今日は、ここまでで大丈夫です。</p></div>`;
 }
 
+/* 自由記述（モニター版だけ。任意） */
+const MEMO = () => state.mode === "monitor";
+function memoHTML(id, label, value){
+  if(!MEMO()) return "";
+  return `<div class="memo"><label for="${id}">${label}</label>
+    <textarea id="${id}" maxlength="400" placeholder="書かなくても大丈夫です">${esc(value||"")}</textarea></div>`;
+}
+function memoVal(id){ const t = $(id); return t ? t.value.trim() : ""; }
 function morningHTML(i){
   const lead = i.last ? "今日は、一か月分を並べて見る日です。"
              : i.review ? "今日は、この一週間をふり返る日です。"
              : "今日、これがあるかどうか見てみましょう。";
   return `<p class="lead">${lead}</p>
     <p class="sentence">${esc(i.sentence)}</p>
+    ${memoHTML("memo-m", "この文について、思ったことがあれば", "")}
     <button class="primary" id="btn-ack">見ました</button>`;
 }
 function laterHTML(i){
@@ -316,7 +330,7 @@ function laterHTML(i){
     <p class="note">それまでは、閉じておいて大丈夫です。</p>`;
 }
 function bindMorning(i){
-  const go = (skipped) => { const r = rec(i.d); r.morning = { at:new Date().toISOString(), skipped }; save(); send("morning", i.d, {skipped}); render(); };
+  const go = (skipped) => { const memo = memoVal("memo-m"); const r = rec(i.d); r.morning = { at:new Date().toISOString(), skipped, memo }; save(); send("morning", i.d, {skipped, memo}); render(); };
   $("btn-ack").onclick = () => go(false);
 }
 
@@ -336,6 +350,7 @@ function nightHTML(i, r){
       ${optButtons("first", fq.options, draft.first)}
       ${fq.note ? `<p class="note">${esc(fq.note)}</p>` : ""}</fieldset>
     <div id="q2"></div>
+    ${memoHTML("memo-n", "今日のことで、書いておきたいことがあれば", r.night ? r.night.memo : "")}
     <button class="primary" id="btn-save" disabled>記録する</button>`;
 }
 function bindNight(i){
@@ -362,8 +377,8 @@ function bindNight(i){
   bindOpts(); draw2(); ready();
   $("btn-save").onclick = () => {
     const r = rec(i.d);
-    r.night = { first: draft.first, present: isPresent(i, draft.first), answer: need2() ? draft.answer : null, at:new Date().toISOString() };
-    save(); send("night", i.d, { timing:r.night.first, answer:r.night.answer||"" }); view="today"; render();
+    r.night = { first: draft.first, present: isPresent(i, draft.first), answer: need2() ? draft.answer : null, memo: memoVal("memo-n"), at:new Date().toISOString() };
+    save(); send("night", i.d, { timing:r.night.first, answer:r.night.answer||"", memo:r.night.memo }); view="today"; render();
   };
 }
 
@@ -431,7 +446,9 @@ function historyHTML(){
     else if(r.night) a = [r.night.first, r.night.answer].filter(Boolean).join("　／　");
     if(r.retain) a += `　／　翌朝：${r.retain.answer}`;
     out += `<div class="row"><div class="d">${d}日目</div><div><div class="s">${esc(i.sentence)}</div>
-      <div class="ans">${a ? esc(a) : "記録なし"}</div></div></div>`;
+      <div class="ans">${a ? esc(a) : "記録なし"}</div>
+      ${r.morning && r.morning.memo ? `<div class="memo-h">朝：${esc(r.morning.memo)}</div>` : ""}
+      ${r.night && r.night.memo ? `<div class="memo-h">夜：${esc(r.night.memo)}</div>` : ""}</div></div>`;
   }
   return `<h2>これまで</h2><p class="note">自分だけが見られます。</p><div class="hist">${out}</div>`;
 }
