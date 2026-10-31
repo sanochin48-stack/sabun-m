@@ -100,6 +100,8 @@ h2{font-size:var(--step-1);font-weight:500;margin:0}
 .hist .wk{font-size:var(--step--1);color:var(--muted);padding:16px 0 4px;letter-spacing:.04em}
 
 .app-id{font-size:var(--step--1);color:var(--muted);font-variant-numeric:tabular-nums;letter-spacing:.04em;align-self:center}
+.ylink{display:flex;justify-content:center;padding-top:4px}
+.late-note{font-size:var(--step--1);color:var(--muted);margin:0}
 footer{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-top:12px;border-top:1px solid var(--line)}
 .dev{border:1px dashed var(--line);border-radius:4px;padding:12px;display:flex;flex-direction:column;gap:10px;font-size:var(--step--1)}
 .dev .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
@@ -136,6 +138,7 @@ const CONFIG = {
   trainerLabel: "さのちん",   // モニター版の告知に出す名前
   gasUrl: "https://script.google.com/macros/s/AKfycbxz1WX9Fn9PtpFaiWcAsLauFGOLoEgQ_C4DR-OoeYeOj0qe0PDvemXRZTndvQjMQA32ow/exec",       // GASのWebアプリURL。空なら送らない
   token: "oOGlAEEMP5DrIUex",         // GAS側の TOKEN と同じ合言葉
+  version: "1.0 (10/31)",     // 画面の右下に出す版の番号
   dev: false                // true のときだけ「試作用の操作」を出す
 };
 const DATA = {"id": "02", "base": "パシスター", "phase": "ハーモナイザー", "phaseFloor": 2, "rank": {"パシスター": 1, "ハーモナイザー": 2, "シンカー": 3, "プロモーター": 4, "イマジナー": 5, "レベル": 6}, "terms": {"cognition": "意見（価値）", "baseDriver": "相手に完全さ", "phaseDriver": "人を喜ばせよ", "need": "一人の人として受け容れられること／感覚的な心地よさ", "failure": "ミスを犯す", "strengths": [{"floor": 1, "type": "パシスター", "label": "献身的・観察力がある・良心的"}, {"floor": 2, "type": "ハーモナイザー", "label": "思いやりがある・感受性が豊か・あたたかい"}, {"floor": 3, "type": "シンカー", "label": "論理的・責任感がある・組織立てる"}]}, "style": "パシスター（通貨：意見・価値）", "sentencePattern": "〔通貨で場面を呼び出す〕のなかに、〔欲求／強み〕の感じがあった", "sameSentence": "朝と夜で同じ文を出す。夜は「あった（その場で）／あった（あとから）／思い当たらなかった」を聞き、あったときだけその週の問いに進む。", "nightly": {"first": {"q": "今日、これはありましたか。", "options": ["あった（その場で気づいた）", "あった（あとから気づいた）", "思い当たらなかった"], "note": "どれを選んでも、良い悪いはありません。あとから気づくのが、ふつうです。"}, "reviewFirst": {"q": "この一週間をふり返って、これはありましたか。", "options": ["あった", "思い当たらなかった"]}, "W1": {"q": "それは自分にとって、", "options": ["当たり前だった", "当たり前じゃないかも、と思った"]}, "W3": {"q": "その力の入れ方は、", "options": ["必要な分だった", "多かった"]}, "W4": {"q": "そのときは、", "options": ["自然に出た", "頑張った"]}}, "nextMorning": {"weeks": ["W2"], "q": "その感じは、まだ残っていますか。", "options": ["残っている", "残っていない"]}, "weeks": [{"id": "W1", "target": "base", "focus": "自分の普通（認知）", "days": ["話を聞いているなかに、「それは正しいのか」と自分の考えに照らしている自分がいた。", "人のやり方を見ているなかに、「こうあるべきだ」と思う瞬間があった。", "大事だと思えるやりとりのなかに、自分の意見をはっきり持っている自分がいた。", "約束や時間のなかに、守られないことが気になる感じがあった。", "何かを決めるなかに、「それは信頼できるか」を確かめている自分がいた。", "会話のなかに、相手の大事にしているものが自分と違うと感じる瞬間があった。", "一週間をふり返るなかに、「誰でもそう考える」と思っていたことが一つあった。"]}, {"id": "W2", "target": "phase", "focus": "心欲", "currency": "パシスター（意見（価値））", "need": "ハーモナイザー：一人の人として受け容れられること／感覚的な心地よさ", "days": ["大事だと思えるやりとりのなかに、自分という人を受けとめてもらえた感じがあった。", "筋を通した場面のなかに、「あなたらしいね」とあたたかく見てもらえた感じがあった。", "信頼できる人と話しているなかに、肩の力が抜ける心地よさがあった。", "自分の考えを伝えたなかに、意見だけでなく自分のことも気にかけてもらえた感じがあった。", "大切にしていることに向き合う時間のなかに、心地よい空間や手触りを味わう感じがあった。", "約束を守り合えたやりとりのなかに、ここにいていいという感じがあった。", "一週間をふり返るなかに、受けとめてもらえた感じが静かに残っていた日があった。"]}, {"id": "W3", "target": "base", "focus": "ドライバー", "days": ["人の仕事を見ているなかに、足りないところが先に目に入る自分がいた。", "意見を伝えているなかに、「こうあるべきだ」をもう一度重ねている自分がいた。", "質問しているなかに、問いが長く入り組んでいく自分がいた。", "相手の話を聞いているなかに、正しさを確かめたくなる感じがあった。", "任せた仕事のなかに、自分の基準どおりかを確かめたくなる感じがあった。", "大事だと思えるやりとりのなかに、分かってほしくて言葉を重ねている自分がいた。", "一週間をふり返るなかに、正しさに力が入っていた場面があった。"]}, {"id": "W4", "target": "phase", "focus": "強み（下三段）", "currency": "パシスター（意見（価値））", "days": ["大事だと思えるやりとりのなかに、相手の言葉の細かいところまで見えている自分がいた。", "筋を通した場面のなかに、大切なことのために力を尽くしている自分がいた。", "大事だと思えるやりとりのなかに、相手の気持ちを汲んでいる自分がいた。", "筋を通した場面のなかに、相手をあたたかく受けとめている自分がいた。", "意見を伝えるなかに、筋道を立てて説明している自分がいた。", "大切にしていることのなかに、最後まで責任を持とうとしている自分がいた。", "一か月分を並べて。W2で「思い当たらなかった」日と、この週で「頑張った」日は重なっていますか。"], "dayStrength": ["パシスター・観察力", "パシスター・献身的", "ハーモナイザー・思いやり", "ハーモナイザー・あたたかさ", "シンカー・論理的", "シンカー・責任感", null], "lastDay": {"mode": "review", "pair": ["W2", "W4"], "rule": "並べるだけ。診断しない。"}}]};
@@ -157,7 +160,8 @@ function daysBetween(a,b){ const pa=a.split("-").map(Number), pb=b.split("-").ma
 const MORNING_FROM = 5, NIGHT_FROM = 19;
 function logicalNow(){ return new Date(Date.now() - MORNING_FROM*3600000); }
 function tomorrowStart(){ const t = logicalNow(); t.setDate(t.getDate()+1); return ymd(t); }
-function realDay(){ return state.start ? daysBetween(state.start, ymd(logicalNow()))+1 : 1; }
+/* dayOffset：その人だけ日付をずらす（例：1 なら1日先に進む）。配布リストとは別に offsets.json で持つ */
+function realDay(){ return state.start ? daysBetween(state.start, ymd(logicalNow()))+1+(DATA.dayOffset||0) : 1; }
 function phase(){
   if(CONFIG.dev && state.devPhase) return state.devPhase;
   const h = new Date().getHours();
@@ -215,6 +219,10 @@ function setWho(i){
   $("who-floor").textContent = fl; $("who-floor").hidden = !fl;
 }
 function render(){
+  renderMain();
+  appendYesterday();
+}
+function renderMain(){
   setPos();
   $("tab-today").setAttribute("aria-current", view==="today"?"page":"false");
   $("tab-history").setAttribute("aria-current", view==="history"?"page":"false");
@@ -228,13 +236,19 @@ function render(){
   const d = today();
   if(d < 1) return m.innerHTML = waitHTML();
   if(d > 28) return m.innerHTML = roundEndHTML(), bindRoundEnd();
+  if(view==="yesterday" && canYesterday(d)){
+    const yi = info(d-1); setWho(yi);
+    m.innerHTML = nightHTML(yi, rec(d-1), true) + `<div class="ylink"><button class="link" id="btn-yback">記録せずに戻る</button></div>`;
+    $("btn-yback").onclick = () => { view="today"; render(); };
+    return bindNight(yi, true);
+  }
   const i = info(d), r = rec(d);
   setWho(i);
   const ph = phase();
   /* 翌朝：朝の時間帯、W2の2〜7日目、前日の夜に「あった」を選んでいたときだけ */
   if(ph==="morning" && i.id==="W2" && i.idx>=1 && i.idx<=6){
     const p = state.records[d-1];
-    if(p && p.night && p.night.present && !p.retain && !r.morning)
+    if(p && p.night && p.night.present && !p.night.late && !p.retain && !r.morning)
       return m.innerHTML = retainHTML(d-1), bindRetain(d-1);
   }
   if(ph==="morning"){
@@ -267,6 +281,22 @@ function bindInApp(){
   $("btn-inapp-continue").onclick = () => { allowInApp = true; render(); };
 }
 function selectUrl(){ const r = document.createRange(); r.selectNodeContents($("url-text")); const sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); }
+
+/* 昨日の夜の記録を忘れたときだけ、昨日に戻れる（昨日だけ。28日目の並べる日は対象外） */
+function canYesterday(d){
+  if(d < 2 || d > 28 || d-1 === 28) return false;
+  const p = state.records[d-1];
+  return !(p && p.night);
+}
+function appendYesterday(){
+  if(!state.start || state.stopped || view!=="today") return;
+  const d = today();
+  if(!canYesterday(d)) return;
+  const m = $("main");
+  if(m.querySelector("#btn-intro-start") || m.querySelector("#btn-start")) return;
+  m.insertAdjacentHTML("beforeend", `<div class="ylink"><button class="link" id="btn-yesterday">昨日の夜の記録をつける</button></div>`);
+  $("btn-yesterday").onclick = () => { view="yesterday"; render(); window.scrollTo(0,0); };
+}
 
 function introHTML(){
   const monitor = state.mode==="monitor";
@@ -342,25 +372,26 @@ function optButtons(name, options, current){
 function firstQ(i){ return i.review ? DATA.nightly.reviewFirst : DATA.nightly.first; }
 function isPresent(i, v){ const o = firstQ(i).options; return !!v && v !== o[o.length-1]; }
 function secondQ(i){ return i.review ? null : (DATA.nightly[i.id] || null); }
-function nightHTML(i, r){
+function nightHTML(i, r, late){
   const fq = firstQ(i);
+  const head = late ? `<p class="late-note">昨日（${i.d}日目）の夜の分です。</p>` : "";
   draft = { first: r.night ? r.night.first : null, answer: r.night ? r.night.answer : null };
-  return `<p class="sentence small">${esc(i.sentence)}</p>
-    <fieldset class="q"><legend>${esc(fq.q)}</legend>
+  return `${head}<p class="sentence small">${esc(i.sentence)}</p>
+    <fieldset class="q"><legend>${esc(late ? fq.q.replace("今日、","昨日、") : fq.q)}</legend>
       ${optButtons("first", fq.options, draft.first)}
       ${fq.note ? `<p class="note">${esc(fq.note)}</p>` : ""}</fieldset>
     <div id="q2"></div>
     ${memoHTML("memo-n", "今日のことで、書いておきたいことがあれば", r.night ? r.night.memo : "")}
     <button class="primary" id="btn-save" disabled>記録する</button>`;
 }
-function bindNight(i){
+function bindNight(i, late){
   const sq = secondQ(i);
   const need2 = () => !!sq && isPresent(i, draft.first);
   const draw2 = () => {
     if(!need2()){
       draft.answer = null;
       /* W2で「あった」のときは、二つ目の代わりに翌朝の予告を出す */
-      const w2 = i.id==="W2" && !i.review && isPresent(i, draft.first) && DATA.nextMorning;
+      const w2 = !late && i.id==="W2" && !i.review && isPresent(i, draft.first) && DATA.nextMorning;
       $("q2").innerHTML = w2 ? `<p class="note next">明日の朝、この感じがまだ残っているかを聞きます。</p>` : "";
       return;
     }
@@ -378,7 +409,8 @@ function bindNight(i){
   $("btn-save").onclick = () => {
     const r = rec(i.d);
     r.night = { first: draft.first, present: isPresent(i, draft.first), answer: need2() ? draft.answer : null, memo: memoVal("memo-n"), at:new Date().toISOString() };
-    save(); send("night", i.d, { timing:r.night.first, answer:r.night.answer||"", memo:r.night.memo }); view="today"; render();
+    if(late) r.night.late = true;
+    save(); send(late ? "night_late" : "night", i.d, { timing:r.night.first, answer:r.night.answer||"", memo:r.night.memo }); view="today"; render();
   };
 }
 
@@ -498,11 +530,11 @@ $("dev-reset").onclick = () => { state = { start:null, name:null, records:{}, qu
 /* 開きっぱなしでも、5時・19時をまたいだら画面を切り替える（選びかけの答えは消さない） */
 let shown = "";
 function key(){ return today() + "-" + phase(); }
-function tick(){ if(key()!==shown && view!=="edit"){ shown = key(); render(); } }
+function tick(){ if(key()!==shown && view!=="edit" && view!=="yesterday"){ shown = key(); render(); } }
 setInterval(tick, 60000);
 document.addEventListener("visibilitychange", () => { if(!document.hidden) tick(); });
 
-$("app-id").textContent = "ID " + DATA.id;
+$("app-id").textContent = "ID " + DATA.id + "　v" + CONFIG.version;
 flush();
 shown = key();
 render();
